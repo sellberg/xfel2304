@@ -11,6 +11,7 @@ class ProcessDarks():
         config.read(conf_fname)
         self.script_dir = config.get('toolbox', 'script_dir', fallback='')
         self.exp_dir = config.get('toolbox', 'exp_dir')
+        self.detector_str = config.get('toolbox', 'detector_string')
         self.output_dir = config.get('toolbox', 'output_dir', fallback='.')
 
     def process(self, runs, test=False):
@@ -23,6 +24,7 @@ class ProcessDarks():
         command = self.script_dir + 'sbatch_analyse.py '
         command += '--input_dir ' + self.exp_dir + ' '
         command += '--output_dir ' + self.output_dir + ' '
+        command += '--detector_string ' + self.detector_str + ' '
         command += '--type dark --run_type all '
         command += '--run_list ' + ' '.join(sruns) + ' '
         print(command)
