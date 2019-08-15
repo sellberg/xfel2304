@@ -33,7 +33,7 @@ def truefalse(v):
         else:
             raise argparse.ArgumentTypeError('Boolean value expected for the progrum input argument.')
             
-def create_vds(dir_exp_in, dir_save_in, runnum_in, is_raw_in, exclude_modules=[]):
+def create_vds(dir_exp_in, dir_save_in, runnum_in, is_raw_in, npulses, exclude_modules=[]):
     
     stime = time.time()
     
@@ -65,7 +65,7 @@ def create_vds(dir_exp_in, dir_save_in, runnum_in, is_raw_in, exclude_modules=[]
     if args.runnum is not None: 
         runnum=args.runnum
         
-    npulses = 176
+    #npulses = 250
     folder = '{}r{:04d}/'.format(dir_exp, runnum)
     
     if is_raw==True:
@@ -160,7 +160,8 @@ def create_vds(dir_exp_in, dir_save_in, runnum_in, is_raw_in, exclude_modules=[]
                     vsource_data1 = h5py.VirtualSource(dset1)[sel,:,:]
                     
                 layout_data[m, indices] = vsource_data
-                layout_data1 [m, indices] = vsource_data1
+                if not is_raw:
+                    layout_data1 [m, indices] = vsource_data1
                 cid = f[dset_prefix+'cellId'][:].ravel()[sel]
                 pid = f[dset_prefix+'pulseId'][:].ravel()[sel]
                 sel_indices = np.zeros(len(all_trains), dtype=np.bool)
@@ -180,13 +181,14 @@ def create_vds(dir_exp_in, dir_save_in, runnum_in, is_raw_in, exclude_modules=[]
 if __name__ == '__main__':
 
     # input options will be overwritten by the command line options if any specified
-    dir_exp='/gpfs/exfel/exp/SPB/201802/p002145/proc/'  # experimental input directory, e.g. '/gpfs/exfel/exp/SPB/201802/p002145/proc/' or '/gpfs/exfel/exp/SPB/201802/p002145/raw/'
-    dir_save='/gpfs/exfel/data/group/theory/kurta/EuXFEL/SPB/2019_run4_p2304/calc1_test/' # output directory 
-    runnum=18    # run number
-    is_raw=False # True, if processing raw data, False otherwise 
+    dir_exp='/gpfs/exfel/exp/SPB/201901/p002304/raw/'  # experimental input directory, e.g. '/gpfs/exfel/exp/SPB/201802/p002145/proc/' or '/gpfs/exfel/exp/SPB/201802/p002145/raw/'
+    dir_save='/gpfs/exfel/data/group/theory/kurta/EuXFEL/SPB/2019_run4_p2304/vds/' # output directory 
+    runnum=20    # run number
+    npulses = 250 # number of pulses / train
+    is_raw=True # True, if processing raw data, False otherwise 
     exclude_modules=[] # list of modules which will be excluded from reading, e.g. [], [1,3]
     
     startTime = time.time()
-    create_vds(dir_exp, dir_save, runnum, is_raw, exclude_modules)
+    create_vds(dir_exp, dir_save, runnum, is_raw, npulses, exclude_modules)
     TotalTime = (time.time()-startTime)
     print('Program runtime: {} s'.format(str(math.ceil(TotalTime))))
