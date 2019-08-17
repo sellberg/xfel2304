@@ -1,5 +1,7 @@
 #!/bin/bash
-module load exfel exfel_anaconda3 
+source /gpfs/cfel/cxi/common/public/development/setup.sh
+
+module load exfel exfel_anaconda3 cheetah
 
 # This is pointing still to software installed for the xfel2013 experiment
 #export PATH=/gpfs/exfel/exp/SPB/201701/p002013/usr/Software/python-packages/bin:$PATH
